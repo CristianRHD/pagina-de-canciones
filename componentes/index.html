@@ -8,35 +8,25 @@
 </head>
 <body>
 
-  <!-- Fondos ambientales -->
   <div class="blob"></div>
   <div class="blob2"></div>
 
-  <!-- ══════════════════════════════════════════
-       NAVBAR
-  ══════════════════════════════════════════ -->
+  <!-- NAVBAR -->
   <nav class="navbar">
     <span class="nav-logo" data-page="inicio">OYE</span>
-
     <div class="nav-links">
       <span class="nav-link active" data-page="inicio">Inicio</span>
       <span class="nav-link"       data-page="canciones">Canciones</span>
     </div>
-
     <div class="nav-right">
-      <button class="btn btn-outline"  data-action="contacto">Contacto</button>
-      <button class="btn btn-ghost"    data-page="login">Iniciar Sesión</button>
-      <button class="btn btn-accent"   data-page="registro">Registro</button>
+      <button class="btn btn-outline" data-action="contacto">Contacto</button>
+      <button class="btn btn-ghost"   data-page="login">Iniciar Sesión</button>
+      <button class="btn btn-accent"  data-page="registro">Registro</button>
     </div>
   </nav>
 
-
-  <!-- ══════════════════════════════════════════
-       PÁGINA: INICIO
-  ══════════════════════════════════════════ -->
+  <!-- PÁGINA: INICIO -->
   <div id="page-inicio" class="page active">
-
-    <!-- Hero -->
     <section class="hero">
       <div class="hero-text">
         <h1>Canciones gratis para <span>la comunidad</span></h1>
@@ -46,7 +36,6 @@
       <div class="hero-visual">🎧</div>
     </section>
 
-    <!-- TOP 3 -->
     <section class="top3-section">
       <div class="top3-label">TOP <span>3</span></div>
       <div class="top3-card">
@@ -54,9 +43,7 @@
           <span>Nombre</span>
           <span>Canción</span>
         </div>
-        <div id="top3-body">
-          <!-- JS inserta aquí -->
-        </div>
+        <div id="top3-body"></div>
       </div>
     </section>
 
@@ -66,12 +53,8 @@
     </footer>
   </div>
 
-
-  <!-- ══════════════════════════════════════════
-       PÁGINA: CANCIONES
-  ══════════════════════════════════════════ -->
+  <!-- PÁGINA: CANCIONES -->
   <div id="page-canciones" class="page">
-
     <div class="canciones-wrap">
       <div class="canciones-top">
         <h2>♪ <span>Canciones</span></h2>
@@ -82,84 +65,65 @@
       </div>
       <div class="cards-grid" id="cards-grid"></div>
     </div>
-
     <footer class="footer">
       <span>Comparte la Música</span>
       <span>© Derechos Reservados</span>
     </footer>
   </div>
 
-
-  <!-- ══════════════════════════════════════════
-       PÁGINA: LOGIN
-  ══════════════════════════════════════════ -->
+  <!-- PÁGINA: LOGIN -->
   <div id="page-login" class="page">
     <div class="auth-wrap">
       <div class="auth-box">
         <h2>Iniciar <span>Sesión</span></h2>
-
         <div id="alert-login" class="alert"></div>
-
         <form id="form-login" novalidate>
           <div class="form-group">
             <label for="login-email">Correo Electrónico <span class="req">*</span></label>
             <input type="email" id="login-email" placeholder="tu@correo.com">
             <div class="error-msg"></div>
           </div>
-
           <div class="form-group">
             <label for="login-pass">Contraseña <span class="req">*</span></label>
             <input type="password" id="login-pass" placeholder="••••••••">
             <div class="error-msg"></div>
           </div>
-
           <button type="submit" class="btn btn-accent btn-full">Continuar</button>
         </form>
-
         <div class="form-footer">
           ¿No tienes cuenta? <a data-page="registro">Regístrate</a>
         </div>
       </div>
     </div>
-
     <footer class="footer">
       <span>Comparte la Música</span>
       <span>© Derechos Reservados</span>
     </footer>
   </div>
 
-
-  <!-- ══════════════════════════════════════════
-       PÁGINA: REGISTRO
-  ══════════════════════════════════════════ -->
+  <!-- PÁGINA: REGISTRO -->
   <div id="page-registro" class="page">
     <div class="auth-wrap">
       <div class="auth-box">
         <h2><span>Registro</span></h2>
-
         <div id="alert-registro" class="alert"></div>
         <p class="req-note">* Campos Obligatorios</p>
-
         <form id="form-registro" novalidate>
-
           <div class="form-group">
             <label for="reg-email">Correo Electrónico <span class="req">*</span></label>
             <input type="email" id="reg-email" placeholder="tu@correo.com">
             <div class="error-msg"></div>
           </div>
-
           <div class="form-group">
             <label for="reg-pass">Contraseña <span class="req">*</span></label>
             <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
             <div class="error-msg"></div>
           </div>
-
           <div class="form-group">
             <label for="reg-pass-conf">Confirmar Contraseña <span class="req">*</span></label>
             <input type="password" id="reg-pass-conf" placeholder="Repite tu contraseña">
             <div class="error-msg"></div>
           </div>
-
           <div class="form-group">
             <label for="reg-genero">Género Musical Favorito <span class="req">*</span></label>
             <select id="reg-genero">
@@ -177,7 +141,6 @@
             </select>
             <div class="error-msg"></div>
           </div>
-
           <div class="form-group">
             <label>Edad <span class="req">*</span></label>
             <div class="radio-group">
@@ -185,42 +148,29 @@
               <label><input type="radio" name="edad" value="20a40">   20 a 40</label>
               <label><input type="radio" name="edad" value="mas50">   Más de 50</label>
             </div>
-            <div class="error-msg" id="error-edad" style="display:none">
-              Selecciona tu rango de edad.
-            </div>
+            <div class="error-msg" id="error-edad" style="display:none">Selecciona tu rango de edad.</div>
           </div>
-
           <div class="form-group">
             <div class="check-group">
               <input type="checkbox" id="reg-terminos">
-              <label for="reg-terminos">
-                Acepto los <a href="#">Términos de Uso</a> <span class="req">*</span>
-              </label>
+              <label for="reg-terminos">Acepto los <a href="#">Términos de Uso</a> <span class="req">*</span></label>
             </div>
-            <div class="error-msg" id="error-terminos" style="display:none">
-              Debes aceptar los Términos de Uso.
-            </div>
+            <div class="error-msg" id="error-terminos" style="display:none">Debes aceptar los Términos de Uso.</div>
           </div>
-
           <button type="submit" class="btn btn-accent btn-full">Continuar</button>
         </form>
-
         <div class="form-footer">
           ¿Ya tienes cuenta? <a data-page="login">Iniciar Sesión</a>
         </div>
       </div>
     </div>
-
     <footer class="footer">
       <span>Comparte la Música</span>
       <span>© Derechos Reservados</span>
     </footer>
   </div>
 
-
-  <!-- ══════════════════════════════════════════
-       MODAL: CONTACTO
-  ══════════════════════════════════════════ -->
+  <!-- MODAL: CONTACTO -->
   <div class="modal-overlay" id="modal-contacto">
     <div class="modal-box">
       <h3><span>Contacto</span></h3>
@@ -238,6 +188,7 @@
     </div>
   </div>
 
+  <!-- JS: ruta correcta desde componentes/ hacia js/ -->
   <script src="../js/app.js"></script>
 </body>
 </html>

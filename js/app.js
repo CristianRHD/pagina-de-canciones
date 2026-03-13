@@ -1,17 +1,20 @@
 // ============================
 //  OYE — app.js
+//  Ubicación: js/app.js
 // ============================
 
 let canciones = [];
 
+// Rutas relativas desde componentes/index.html
 const iconPath = num => `../imagenes/icon_${num}.svg`;
 const mp3Path  = r   => `../canciones/${r}`;
 
-// ── Cargar datos ──────────────────────────────
+// ── Cargar datos.json ─────────────────────────
 fetch('../datos.json')
   .then(r => r.json())
   .then(d => { canciones = d.canciones; init(); })
   .catch(() => {
+    // Fallback si no hay servidor (abrir con file://)
     canciones = [
       {nombre:'vive',       ruta:'uno.mp3',    reproducciones:1200, icono:4},
       {nombre:'invierno',   ruta:'dos.mp3',    reproducciones:30,   icono:1},
@@ -75,7 +78,6 @@ function renderCards(lista) {
   const ordenadas = [...lista].sort((a,b) => b.reproducciones - a.reproducciones);
   const grid = document.getElementById('cards-grid');
   grid.innerHTML = '';
-
   if (!ordenadas.length) {
     grid.innerHTML = '<p class="empty-msg">No se encontraron canciones.</p>';
     return;
@@ -111,7 +113,9 @@ function bindContacto() {
     .forEach(b => b.addEventListener('click', () => overlay.classList.add('open')));
   document.getElementById('btn-cerrar-modal')
     .addEventListener('click', () => overlay.classList.remove('open'));
-  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.classList.remove('open'); });
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
 }
 
 // ── Login ─────────────────────────────────────
@@ -122,10 +126,14 @@ function bindLogin() {
     const pass  = e.target.querySelector('#login-pass');
     clearErr(email); clearErr(pass);
     let ok = true;
-    if (!email.value.trim() || !isEmail(email.value)) { setErr(email, 'Correo electrónico inválido.'); ok=false; }
-    if (!pass.value.trim())  { setErr(pass, 'La contraseña es obligatoria.'); ok=false; }
+    if (!email.value.trim() || !isEmail(email.value)) {
+      setErr(email, 'Correo electrónico inválido.'); ok = false;
+    }
+    if (!pass.value.trim()) {
+      setErr(pass, 'La contraseña es obligatoria.'); ok = false;
+    }
     if (ok) {
-      showAlert('alert-login','success','¡Bienvenido! Sesión iniciada correctamente.');
+      showAlert('alert-login', 'success', '¡Bienvenido! Sesión iniciada correctamente.');
       e.target.reset();
     }
   });
@@ -141,21 +149,21 @@ function bindRegistro() {
     const conf = f.querySelector('#reg-pass-conf');
     const gen  = f.querySelector('#reg-genero');
     const term = f.querySelector('#reg-terminos');
-    const edadOk = [...f.querySelectorAll('input[name="edad"]')].some(r=>r.checked);
+    const edadOk = [...f.querySelectorAll('input[name="edad"]')].some(r => r.checked);
 
     clearErr(mail); clearErr(pass); clearErr(conf); clearErr(gen);
     hide('error-edad'); hide('error-terminos');
 
     let ok = true;
-    if (!mail.value.trim() || !isEmail(mail.value)) { setErr(mail,'Correo electrónico inválido.'); ok=false; }
-    if (!pass.value || pass.value.length<6)          { setErr(pass,'Mínimo 6 caracteres.'); ok=false; }
-    if (conf.value !== pass.value)                   { setErr(conf,'Las contraseñas no coinciden.'); ok=false; }
-    if (!gen.value)                                  { setErr(gen,'Selecciona un género musical.'); ok=false; }
-    if (!edadOk)                                     { show('error-edad'); ok=false; }
-    if (!term.checked)                               { show('error-terminos'); ok=false; }
+    if (!mail.value.trim() || !isEmail(mail.value)) { setErr(mail, 'Correo electrónico inválido.'); ok = false; }
+    if (!pass.value || pass.value.length < 6)        { setErr(pass, 'Mínimo 6 caracteres.'); ok = false; }
+    if (conf.value !== pass.value)                   { setErr(conf, 'Las contraseñas no coinciden.'); ok = false; }
+    if (!gen.value)                                  { setErr(gen,  'Selecciona un género musical.'); ok = false; }
+    if (!edadOk)                                     { show('error-edad'); ok = false; }
+    if (!term.checked)                               { show('error-terminos'); ok = false; }
 
     if (ok) {
-      showAlert('alert-registro','success','¡Registro exitoso! Ya puedes iniciar sesión.');
+      showAlert('alert-registro', 'success', '¡Registro exitoso! Ya puedes iniciar sesión.');
       f.reset();
     }
   });
@@ -167,12 +175,15 @@ const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 function setErr(input, msg) {
   input.classList.add('error');
   const el = input.nextElementSibling;
-  if (el?.classList.contains('error-msg')) { el.textContent = msg; el.style.display = 'block'; }
+  if (el && el.classList.contains('error-msg')) {
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
 }
 function clearErr(input) {
   input.classList.remove('error');
   const el = input.nextElementSibling;
-  if (el?.classList.contains('error-msg')) el.style.display = 'none';
+  if (el && el.classList.contains('error-msg')) el.style.display = 'none';
 }
 function show(id) { document.getElementById(id).style.display = 'block'; }
 function hide(id) { document.getElementById(id).style.display = 'none'; }
