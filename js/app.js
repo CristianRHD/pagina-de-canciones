@@ -1,7 +1,4 @@
-// ============================
-//  OYE — app.js
-//  Ubicación: js/app.js
-// ============================
+
 
 let canciones = [];
 
@@ -14,7 +11,7 @@ fetch('../datos.json')
   .then(r => r.json())
   .then(d => { canciones = d.canciones; init(); })
   .catch(() => {
-    // Fallback si no hay servidor (abrir con file://)
+  
     canciones = [
       {nombre:'vive',       ruta:'uno.mp3',    reproducciones:1200, icono:4},
       {nombre:'invierno',   ruta:'dos.mp3',    reproducciones:30,   icono:1},
@@ -29,7 +26,7 @@ fetch('../datos.json')
     init();
   });
 
-// ── Init ──────────────────────────────────────
+// Init
 function init() {
   renderTop3();
   renderCards(canciones);
@@ -38,9 +35,75 @@ function init() {
   bindContacto();
   bindLogin();
   bindRegistro();
+  bindTheme();
+  initNotes();
 }
 
-// ── Navegación SPA ────────────────────────────
+// Modo claro y oscuro 
+function bindTheme() {
+  const btn = document.getElementById('btn-theme');
+  const saved = localStorage.getItem('oye-theme');
+  if (saved === 'light') { document.body.classList.add('light'); btn.textContent = '☀️'; }
+  btn.addEventListener('click', () => {
+    const isLight = document.body.classList.toggle('light');
+    btn.textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('oye-theme', isLight ? 'light' : 'dark');
+  });
+}
+
+// Notas musicales flotantes canvas
+function initNotes() {
+  const canvas = document.getElementById('notes-canvas');
+  const ctx    = canvas.getContext('2d');
+  const NOTES  = ['♩','♪','♫','♬','𝄞'];
+  let particles = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 22; i++) particles.push(newParticle(true));
+
+  function newParticle(random) {
+    return {
+      x:        Math.random() * canvas.width,
+      y:        random ? Math.random() * canvas.height : canvas.height + 20,
+      note:     NOTES[Math.floor(Math.random() * NOTES.length)],
+      size:     10 + Math.random() * 14,
+      speed:    0.3 + Math.random() * 0.6,
+      drift:    (Math.random() - 0.5) * 0.4,
+      alpha:    0.08 + Math.random() * 0.18,
+      rot:      Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.02,
+    };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isLight = document.body.classList.contains('light');
+    particles.forEach((p, i) => {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.font = `${p.size}px serif`;
+      ctx.fillStyle = isLight ? '#1565c0' : '#e8ff47';
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillText(p.note, 0, 0);
+      ctx.restore();
+      p.y -= p.speed;
+      p.x += p.drift;
+      p.rot += p.rotSpeed;
+      if (p.y < -30) particles[i] = newParticle(false);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// Navegación 
 function bindNav() {
   document.querySelectorAll('[data-page]').forEach(el => {
     el.addEventListener('click', () => mostrarPagina(el.dataset.page));
@@ -55,7 +118,40 @@ function mostrarPagina(nombre) {
     l.classList.toggle('active', l.dataset.page === nombre));
 }
 
-// ── TOP 3 ─────────────────────────────────────
+// TML del ecualizador 
+const eqHTML = `
+  <div class="eq-bars">
+    <div class="eq-bar"></div>
+    <div class="eq-bar"></div>
+    <div class="eq-bar"></div>
+    <div class="eq-bar"></div>
+  </div>`;
+
+// Conecta play/pause de un <audio> con su contenedor padre
+function bindEq(audioEl, container) {
+  const eq = container.querySelector('.eq-bars');
+  if (!eq) return;
+  audioEl.addEventListener('play', () => {
+    // Pausar todos los otros audios de la página
+    document.querySelectorAll('audio').forEach(a => {
+      if (a !== audioEl && !a.paused) {
+        a.pause();
+      }
+    });
+    eq.classList.remove('paused');
+    eq.classList.add('playing');
+  });
+  audioEl.addEventListener('pause', () => {
+    eq.classList.remove('playing');
+    eq.classList.add('paused');
+  });
+  audioEl.addEventListener('ended', () => {
+    eq.classList.remove('playing');
+    eq.classList.add('paused');
+  });
+}
+
+// TOP 3 
 function renderTop3() {
   const top3  = [...canciones].sort((a,b) => b.reproducciones - a.reproducciones).slice(0,3);
   const tbody = document.getElementById('top3-body');
@@ -65,15 +161,17 @@ function renderTop3() {
     row.className = 'top3-row';
     row.innerHTML = `
       <div class="top3-name">
+        ${eqHTML}
         <img src="${iconPath(s.icono)}" alt="${s.nombre}">
         ${s.nombre}
       </div>
       <audio controls src="${mp3Path(s.ruta)}"></audio>`;
     tbody.appendChild(row);
+    bindEq(row.querySelector('audio'), row);
   });
 }
 
-// ── Cards canciones ───────────────────────────
+//  Cartas de  canciones
 function renderCards(lista) {
   const ordenadas = [...lista].sort((a,b) => b.reproducciones - a.reproducciones);
   const grid = document.getElementById('cards-grid');
@@ -87,6 +185,7 @@ function renderCards(lista) {
     card.className = 'song-card';
     card.innerHTML = `
       <div class="card-cover">
+        ${eqHTML}
         <img src="${iconPath(s.icono)}" alt="${s.nombre}">
       </div>
       <div class="card-body">
@@ -95,10 +194,11 @@ function renderCards(lista) {
         <audio controls src="${mp3Path(s.ruta)}"></audio>
       </div>`;
     grid.appendChild(card);
+    bindEq(card.querySelector('audio'), card);
   });
 }
 
-// ── Buscador ──────────────────────────────────
+// Buscador 
 function bindSearch() {
   document.getElementById('search-input').addEventListener('input', e => {
     const q = e.target.value.toLowerCase();
@@ -106,7 +206,7 @@ function bindSearch() {
   });
 }
 
-// ── Modal Contacto ────────────────────────────
+//Contacto
 function bindContacto() {
   const overlay = document.getElementById('modal-contacto');
   document.querySelectorAll('[data-action="contacto"]')
@@ -118,7 +218,7 @@ function bindContacto() {
   });
 }
 
-// ── Login ─────────────────────────────────────
+// Login
 function bindLogin() {
   document.getElementById('form-login').addEventListener('submit', e => {
     e.preventDefault();
@@ -139,7 +239,7 @@ function bindLogin() {
   });
 }
 
-// ── Registro ──────────────────────────────────
+//Registro 
 function bindRegistro() {
   document.getElementById('form-registro').addEventListener('submit', e => {
     e.preventDefault();
@@ -169,7 +269,7 @@ function bindRegistro() {
   });
 }
 
-// ── Helpers ───────────────────────────────────
+
 const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 function setErr(input, msg) {

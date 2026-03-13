@@ -10,6 +10,7 @@
 
   <div class="blob"></div>
   <div class="blob2"></div>
+  <canvas id="notes-canvas"></canvas>
 
   <!-- NAVBAR -->
   <nav class="navbar">
@@ -22,6 +23,7 @@
       <button class="btn btn-outline" data-action="contacto">Contacto</button>
       <button class="btn btn-ghost"   data-page="login">Iniciar Sesión</button>
       <button class="btn btn-accent"  data-page="registro">Registro</button>
+      <button class="btn-theme" id="btn-theme" title="Cambiar tema">🌙</button>
     </div>
   </nav>
 
@@ -170,7 +172,22 @@
     </footer>
   </div>
 
-  <!-- MODAL: CONTACTO -->
+ 
+  <div id="page-404" class="page">
+    <div class="auth-wrap">
+      <div class="not-found-box">
+        <div class="nf-icon">🎵</div>
+        <h2 class="nf-title">4<span>0</span>4</h2>
+        <p class="nf-sub">Esta página no existe… pero la música sí.</p>
+        <button class="btn btn-accent" data-page="inicio">← Volver al Inicio</button>
+      </div>
+    </div>
+    <footer class="footer">
+      <span>Comparte la Música</span>
+      <span>© Derechos Reservados</span>
+    </footer>
+  </div>
+
   <div class="modal-overlay" id="modal-contacto">
     <div class="modal-box">
       <h3><span>Contacto</span></h3>
@@ -188,7 +205,6 @@
     </div>
   </div>
 
-  <!-- JS: ruta correcta desde componentes/ hacia js/ -->
   <script src="../js/app.js"></script>
 </body>
 </html>
